@@ -1,0 +1,92 @@
+﻿{% extends "studio/base.html" %}
+{% block title %}Пробное занятие · Школа спорта и искусства "Vladimirka"{% endblock %}
+{% block extra_css %}
+  .auth-panel { max-width: 52rem; }
+  .trial-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 1.75rem;
+  }
+  .trial-grid .field--full { grid-column: 1 / -1; }
+  .trial-grid .field--full textarea { min-height: 8rem; }
+  .form-actions { margin-top: 1.25rem; }
+  @media (max-width: 760px) {
+    .trial-grid { grid-template-columns: 1fr; }
+  }
+{% endblock %}
+{% block content %}
+  <section class="auth-hero">
+    <div class="auth-hero__inner">
+      <span class="auth-hero__eyebrow">Пробное занятие</span>
+      <h1 class="auth-hero__title">Запись на <em>пробное</em></h1>
+      <p class="auth-hero__lead">
+        Оставьте контакты, администратор свяжется с вами.
+      </p>
+    </div>
+  </section>
+
+  <section class="auth-section">
+    <div class="auth-section__head">
+      <span class="auth-section__label">— Заявка</span>
+      <h2 class="auth-section__title">Оставить заявку</h2>
+    </div>
+    <div class="auth-panel">
+      <form method="post" novalidate>
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+          <ul class="errorlist">{% for e in form.non_field_errors %}<li>{{ e }}</li>{% endfor %}</ul>
+        {% endif %}
+        <div class="trial-grid">
+          {% for field in form %}
+            <div class="field{% if field.name == 'comment' %} field--full{% endif %}">
+              {{ field.label_tag }}
+              {{ field }}
+              {% if field.help_text %}<p class="field__help">{{ field.help_text }}</p>{% endif %}
+              {% if field.errors %}
+                <ul class="errorlist">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn">Отправить заявку</button>
+        </div>
+      </form>
+    </div>
+  </section>
+  <script>
+    document.querySelectorAll('[data-phone-mask]').forEach(function(el) {
+      el.addEventListener('input', function() {
+        var v = this.value.replace(/\D/g, '');
+        if (v.startsWith('8') && v.length === 11) v = '7' + v.slice(1);
+        if (!v.startsWith('7')) v = '7' + v;
+        v = v.slice(0, 11);
+        var r = '+7';
+        if (v.length > 1) r += ' (' + v.slice(1, 4);
+        if (v.length >= 4) r += ') ' + v.slice(4, 7);
+        if (v.length >= 7) r += '-' + v.slice(7, 9);
+        if (v.length >= 9) r += '-' + v.slice(9, 11);
+        this.value = r;
+      });
+    });
+  </script>
+{% endblock %}
+{% block extra_head %}
+<script>
+  (function () {
+    function initEffects() {
+      var header = document.querySelector('.site-header');
+      var topBtn = document.getElementById('back-to-top');
+      function onScroll() {
+        var s = window.scrollY > 8;
+        if (header) header.classList.toggle('is-scrolled', s);
+        if (topBtn) topBtn.classList.toggle('is-visible', window.scrollY > 320);
+      }
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      if (topBtn) topBtn.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initEffects); else initEffects();
+  })();
+</script>
+{% endblock %}

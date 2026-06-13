@@ -1,0 +1,14 @@
+{
+  "name": "studio-django",
+  "private": true,
+  "description": "Сборка CSS для Django: npm run build:css перед деплоем или при изменении шаблонов с классами Tailwind",
+  "scripts": {
+    "build:css": "tailwindcss -i ./src/tailwind-input.css -o ./studio/static/studio/css/tailwind.css --minify",
+    "watch:css": "tailwindcss -i ./src/tailwind-input.css -o ./studio/static/studio/css/tailwind.css --watch"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^3.4.17"
+  }
+}

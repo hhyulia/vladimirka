@@ -1,0 +1,833 @@
+﻿{% extends "studio/base.html" %}
+{% load static studio_extras %}
+{% block title %}Главная · Школа спорта и искусства "Vladimirka"{% endblock %}
+
+{% block extra_css %}
+  .full-bleed {
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    width: 100vw;
+  }
+
+  .home-hero {
+    position: relative;
+    overflow: hidden;
+    margin-top: -2.5rem;
+    background:
+      radial-gradient(60% 70% at 88% 8%, rgba(212, 168, 70, 0.55), transparent 60%),
+      radial-gradient(50% 55% at 12% 100%, rgba(184, 146, 58, 0.4), transparent 65%),
+      radial-gradient(40% 45% at 50% 40%, rgba(122, 134, 86, 0.35), transparent 70%),
+      linear-gradient(135deg, #2b2d26 0%, var(--color-olive) 40%, #5c6647 70%, #2f342a 100%);
+    color: var(--color-white);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .home-hero::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background:
+      radial-gradient(90% 120% at 100% 0%, rgba(212, 168, 70, 0.18), transparent 55%),
+      radial-gradient(80% 100% at 0% 100%, rgba(0, 0, 0, 0.25), transparent 55%);
+  }
+  .home-hero__inner { position: relative; z-index: 1; }
+  main > .messages { margin-bottom: 0; }
+  .home-hero__inner { padding: 4.5rem 1.5rem 4rem; max-width: 1120px; margin: 0 auto; }
+  .home-hero__eyebrow {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--color-gold-bright);
+  }
+  .home-hero__eyebrow::before {
+    content: ""; display: inline-block; width: 2rem; height: 1px;
+    background: var(--color-gold-bright); opacity: 0.7;
+  }
+  .home-hero__title {
+    font-family: var(--font-heading); font-weight: 600;
+    font-size: clamp(2.4rem, 5.5vw, 4.6rem);
+    line-height: 1.02; letter-spacing: -0.01em;
+    margin: 1rem 0 0; color: var(--color-white);
+  }
+  .home-hero__title em {
+    font-style: italic; color: var(--color-gold-bright); font-weight: 600;
+  }
+  .home-hero__lead {
+    margin: 1.4rem 0 0; max-width: 36rem;
+    color: rgba(255,255,255,0.82); font-size: 1.05rem; line-height: 1.65;
+  }
+  .home-hero__cta { margin-top: 1.8rem; display: flex; flex-wrap: wrap; gap: 0.75rem; }
+  .btn-primary {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 0.85rem 1.85rem; border-radius: 999px;
+    background: var(--color-gold); color: var(--color-white);
+    border: 1px solid var(--color-gold);
+    font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.14em;
+    box-shadow: 0 14px 32px rgba(154, 123, 44, 0.32); transition: background .15s, border-color .15s;
+  }
+  .btn-primary:hover { background: var(--color-gold-bright); border-color: var(--color-gold-bright); color: var(--color-white); text-decoration: none; }
+  .btn-ghost-light {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 0.85rem 1.85rem; border-radius: 999px;
+    background: transparent; color: var(--color-white);
+    border: 1px solid rgba(255,255,255,0.45);
+    font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.14em;
+    transition: background .15s, border-color .15s;
+  }
+  .btn-ghost-light:hover { background: rgba(255,255,255,0.08); border-color: var(--color-white); color: var(--color-white); text-decoration: none; }
+
+  .home-hero__card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.16);
+    border-radius: 16px; padding: 1.5rem 1.6rem;
+    backdrop-filter: blur(2px);
+  }
+  .home-hero__card-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--color-gold-bright); margin: 0; }
+  .home-hero__card-text { margin: 0.5rem 0 0; color: rgba(255,255,255,0.9); font-size: 1.05rem; line-height: 1.5; }
+  .home-hero__stats { margin-top: 1.4rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .home-hero__stat-num { font-family: var(--font-heading); font-size: 2rem; color: var(--color-gold-bright); margin: 0; line-height: 1.05; font-weight: 600; }
+  .home-hero__stat-label { margin: 0.2rem 0 0; font-size: 0.66rem; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.6); }
+  .home-hero__link {
+    margin-top: 1.3rem; display: inline-flex; align-items: center; gap: 0.5rem;
+    font-size: 0.75rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--color-gold-bright);
+  }
+  .home-hero__link:hover { color: var(--color-white); text-decoration: none; }
+
+  .home-hero__slider {
+    position: relative; border-radius: 16px; overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.18);
+    aspect-ratio: 4 / 3; box-shadow: 0 20px 44px rgba(0,0,0,0.3);
+  }
+  .home-hero__slide {
+    position: absolute; inset: 0; opacity: 0; visibility: hidden;
+    transition: opacity .8s ease, visibility .8s ease;
+  }
+  .home-hero__slide.is-active { opacity: 1; visibility: visible; }
+  .home-hero__slide img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .home-hero__slide--1,
+  .home-hero__slide--2,
+  .home-hero__slide--3 { background: var(--color-olive); }
+  .home-hero__slide::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.55), transparent 55%);
+  }
+  .home-hero__slide-caption {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 1;
+    padding: 1.1rem 1.3rem;
+    color: var(--color-white); font-family: var(--font-heading);
+    font-size: 1.25rem; font-weight: 600; line-height: 1.2;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.45);
+  }
+  .home-hero__dots {
+    position: absolute; bottom: 0.95rem; right: 1.1rem; z-index: 2;
+    display: flex; gap: 0.4rem;
+  }
+  .home-hero__dot {
+    width: 8px; height: 8px; padding: 0; border: none; cursor: pointer;
+    border-radius: 999px; background: rgba(255,255,255,0.5);
+    transition: width .25s ease, background .2s ease;
+  }
+  .home-hero__dot.is-active { width: 20px; background: var(--color-gold-bright); }
+
+  .home-section { margin-top: 4rem; }
+  .home-section__label {
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--color-gold);
+  }
+  .home-section__title {
+    font-family: var(--font-heading); font-weight: 600;
+    color: var(--color-olive);
+    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+    line-height: 1.15; margin: 0.5rem 0 0;
+  }
+  .home-section__title em { font-style: italic; color: var(--color-olive-soft); font-weight: 600; }
+  .home-section__intro { margin: 0.75rem 0 0; max-width: 40rem; color: var(--color-text-muted); font-size: 1.02rem; }
+  .home-section__link {
+    display: inline-flex; align-items: center; gap: 0.45rem;
+    font-size: 0.75rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--color-gold);
+  }
+  .home-section__link:hover { color: var(--color-gold-bright); text-decoration: none; }
+
+  .home-features {
+    list-style: none; margin: 0;
+    padding: 1.6rem 1.85rem;
+    background: var(--color-surface); border: 1px solid var(--color-border);
+    border-radius: 16px; box-shadow: var(--shadow-soft);
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.55rem 1.75rem;
+  }
+  .home-features li {
+    display: flex; align-items: flex-start; gap: 0.65rem;
+    color: var(--color-text); font-size: 0.96rem; line-height: 1.45;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .home-features li:last-child,
+  .home-features li:nth-last-child(2) { border-bottom: none; }
+  .home-features li::before {
+    content: ""; flex-shrink: 0; width: 0.5rem; height: 0.5rem; margin-top: 0.5rem;
+    border-radius: 999px; background: var(--color-gold);
+  }
+  @media (max-width: 640px) {
+    .home-features { grid-template-columns: 1fr; padding: 1.35rem 1.4rem; gap: 0; }
+    .home-features li:nth-last-child(2) { border-bottom: 1px solid var(--color-border); }
+    .home-features li:last-child { border-bottom: none; }
+  }
+
+  .home-quote {
+    position: relative; overflow: hidden;
+    background: var(--color-paper-dark); border: 1px solid var(--color-border);
+    border-radius: 16px; padding: 4rem 2.5rem 3.25rem; text-align: center;
+  }
+  .home-quote::before, .home-quote::after {
+    position: absolute; font-family: var(--font-heading);
+    font-size: clamp(3rem, 7vw, 5.5rem); line-height: 1;
+    color: rgba(154, 123, 44, 0.3); pointer-events: none; user-select: none;
+  }
+  .home-quote::before { content: "«"; top: 0.6rem; left: 1.1rem; }
+  .home-quote::after  { content: "»"; bottom: 0.2rem; right: 1.1rem; }
+  .home-quote p {
+    position: relative; max-width: 44rem; margin: 0 auto;
+    font-family: var(--font-heading); font-style: italic; font-weight: 600;
+    color: var(--color-olive);
+    font-size: clamp(1.35rem, 2.6vw, 2rem); line-height: 1.35;
+  }
+  .home-quote footer {
+    margin-top: 1.25rem; font-size: 0.72rem; font-weight: 600;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--color-gold);
+  }
+  @media (max-width: 560px) {
+    .home-quote { padding: 2.75rem 1.4rem 2.5rem; }
+    .home-quote::before, .home-quote::after { font-size: 2.75rem; opacity: 0.85; }
+    .home-quote::before { top: 0.35rem; left: 0.6rem; }
+    .home-quote::after  { bottom: 0.1rem; right: 0.6rem; }
+  }
+
+  .home-dirs {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem;
+  }
+  @media (max-width: 960px) { .home-dirs { grid-template-columns: repeat(2, 1fr); } }
+  .home-dir {
+    position: relative; display: block;
+    aspect-ratio: 4 / 5; overflow: hidden; border-radius: 14px;
+    background: linear-gradient(160deg, #3a4133, var(--color-olive) 55%, var(--color-olive-soft));
+    border: 1px solid var(--color-border); box-shadow: var(--shadow-soft);
+    text-decoration: none;
+  }
+  .home-dir:hover { text-decoration: none; }
+  .home-dir img {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+    transition: transform .6s ease;
+  }
+  .home-dir:hover img { transform: scale(1.06); }
+  .home-dir__overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.25) 45%, transparent 70%);
+  }
+  .home-dir__body {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    padding: 1.25rem 1.35rem;
+  }
+  .home-dir__title { font-family: var(--font-heading); font-size: 1.45rem; line-height: 1.15; color: var(--color-white); margin: 0; font-weight: 600; }
+  .home-dir__desc { margin: 0.4rem 0 0; color: rgba(255,255,255,0.78); font-size: 0.9rem; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; }
+  .home-dir__cta {
+    margin-top: 0.7rem; display: inline-flex; align-items: center; gap: 0.4rem;
+    font-size: 0.7rem; font-weight: 600; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--color-gold-bright);
+  }
+  .home-dir__letter {
+    position: absolute; right: 1.2rem; top: 1rem;
+    font-family: var(--font-heading); font-size: 4.5rem; line-height: 1;
+    color: rgba(154, 123, 44, 0.32); font-weight: 600; pointer-events: none;
+  }
+  @media (max-width: 560px) {
+    .home-dirs { grid-template-columns: 1fr; gap: 0.8rem; }
+    .home-dir { aspect-ratio: 16 / 9; border-radius: 12px; }
+    .home-dir__body { padding: 1rem 1.15rem; }
+    .home-dir__title { font-size: 1.2rem; }
+    .home-dir__desc { font-size: 0.85rem; -webkit-line-clamp: 1; }
+    .home-dir__cta { font-size: 0.62rem; margin-top: 0.45rem; }
+    .home-dir__letter { font-size: 3rem; top: 0.7rem; right: 0.9rem; }
+  }
+
+  .home-chips { margin-top: 1.5rem; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+  @media (max-width: 900px) { .home-chips { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .home-chips { grid-template-columns: 1fr; } }
+  .home-chip {
+    background: var(--color-surface); border: 1px solid var(--color-border);
+    border-radius: 16px; padding: 1.5rem 1.4rem; text-align: left;
+    box-shadow: var(--shadow-soft);
+    display: flex; flex-direction: column; gap: 0.45rem;
+    transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease;
+  }
+  .home-chip:hover {
+    border-color: var(--color-gold); transform: translateY(-3px);
+    box-shadow: 0 16px 48px rgba(43, 45, 38, 0.11);
+  }
+  .home-chip__num { font-family: var(--font-heading); font-weight: 600; color: var(--color-olive); font-size: 2.15rem; margin: 0; line-height: 1; }
+  .home-chip__label { margin: 0.1rem 0 0; font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-gold); font-weight: 600; }
+  .home-chip__text { margin: 0.25rem 0 0; font-size: 0.92rem; line-height: 1.5; color: var(--color-text-muted); }
+
+  .home-halls { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem; }
+  @media (max-width: 900px) { .home-halls { grid-template-columns: 1fr; } }
+  .home-hall {
+    background: var(--color-surface); border: 1px solid var(--color-border);
+    border-radius: 14px; box-shadow: var(--shadow-soft); overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .home-hall__head {
+    position: relative; overflow: hidden;
+    height: 9rem; display: flex; align-items: flex-end; padding: 1.25rem;
+    color: var(--color-white);
+  }
+  .home-hall__head--small  { background: linear-gradient(150deg, var(--color-olive-soft), var(--color-olive)); }
+  .home-hall__head--black  { background: linear-gradient(150deg, #2b2d26, #3a4133 60%, var(--color-olive)); }
+  .home-hall__head--third  { background: linear-gradient(150deg, var(--color-gold), var(--color-olive-soft) 70%, var(--color-olive)); }
+  .home-hall__img {
+    position: absolute; inset: 0; z-index: 0;
+    width: 100%; height: 100%; object-fit: cover;
+  }
+  .home-hall__head::after {
+    content: ""; position: absolute; inset: 0; z-index: 1;
+    background: linear-gradient(to top, rgba(43, 45, 38, 0.85), rgba(43, 45, 38, 0.1));
+  }
+  .home-hall__title {
+    position: relative; z-index: 2;
+    font-family: var(--font-heading);
+    font-size: clamp(0.95rem, 2.2vw, 1.35rem);
+    line-height: 1.2;
+    margin: 0;
+    font-weight: 600;
+  }
+  .home-hall__list { list-style: none; margin: 0; padding: 1.25rem 1.35rem; flex: 1; }
+  .home-hall__list li {
+    padding: 0.35rem 0; color: var(--color-text); font-size: 0.95rem;
+    display: flex; gap: 0.55rem;
+  }
+  .home-hall__list li::before { content: "·"; color: var(--color-gold); font-weight: 700; }
+
+  .home-projects { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.1rem; }
+  @media (max-width: 800px) { .home-projects { grid-template-columns: 1fr; } }
+  .home-project {
+    position: relative; display: block;
+    aspect-ratio: 16 / 9; overflow: hidden; border-radius: 16px;
+    background: linear-gradient(155deg, #3a4133, var(--color-olive) 55%, var(--color-olive-soft));
+    border: 1px solid var(--color-border); box-shadow: var(--shadow-soft);
+    text-decoration: none;
+  }
+  .home-project:hover { text-decoration: none; }
+  .home-project img {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+    transition: transform .6s ease;
+  }
+  .home-project:hover img { transform: scale(1.04); }
+  .home-project__overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.25) 50%, transparent 75%);
+  }
+  .home-project__body { position: absolute; inset: auto 0 0 0; padding: 1.5rem 1.6rem; }
+  .home-project__eyebrow { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--color-gold-bright); margin: 0; }
+  .home-project__title { font-family: var(--font-heading); font-size: 1.85rem; color: var(--color-white); margin: 0.4rem 0 0; line-height: 1.1; font-weight: 600; }
+  .home-project__desc { margin: 0.5rem 0 0; color: rgba(255,255,255,0.8); font-size: 0.95rem; max-width: 32rem; }
+
+  .home-trainers__head {
+    display: flex; flex-wrap: wrap; align-items: flex-end;
+    justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem;
+  }
+  .home-trainers__stage { position: relative; }
+  .home-trainers__nav { position: absolute; inset: 0; margin: 0; pointer-events: none; }
+  .home-trainers__btn {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    pointer-events: auto;
+    width: 2.75rem; height: 2.75rem; border-radius: 999px; cursor: pointer;
+    background: var(--color-surface); color: var(--color-olive);
+    border: 1px solid var(--color-border);
+    font-size: 1.1rem; line-height: 1;
+    display: inline-flex; align-items: center; justify-content: center;
+    box-shadow: var(--shadow-soft);
+    transition: background .15s, color .15s, border-color .15s;
+  }
+  .home-trainers__btn:hover {
+    background: var(--color-gold); border-color: var(--color-gold); color: var(--color-white);
+  }
+  .home-trainers__btn--prev { left: -0.25rem; }
+  .home-trainers__btn--next { right: -0.25rem; }
+  .home-trainers__viewport { overflow: hidden; padding: 0.5rem 0.25rem 1.25rem; margin: 0 -0.25rem; }
+  .home-trainers__track {
+    display: flex; gap: 1.1rem;
+    will-change: transform;
+  }
+  .home-trainer {
+    flex: 0 0 auto;
+    width: clamp(13rem, 26vw, 15.75rem);
+    position: relative; overflow: hidden;
+    background: linear-gradient(180deg, var(--color-surface) 0%, var(--color-paper-dark) 100%);
+    border: 1px solid var(--color-border);
+    border-radius: 18px;
+    padding: 0 1.35rem 1.65rem;
+    text-align: center;
+    display: flex; flex-direction: column; align-items: center;
+    box-shadow: var(--shadow-soft);
+    transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+  }
+  .home-trainer::before {
+    content: "";
+    display: block; align-self: stretch;
+    height: 4px; margin: 0 -1.35rem 1.35rem;
+    background: linear-gradient(90deg, var(--color-olive-soft), var(--color-gold-bright) 50%, var(--color-olive-soft));
+  }
+  .home-trainer:hover {
+    border-color: var(--color-gold);
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(43, 45, 38, 0.11);
+  }
+  .home-trainer__avatar {
+    width: 7.75rem; height: 7.75rem; border-radius: 999px; overflow: hidden;
+    background: linear-gradient(150deg, var(--color-olive-soft), var(--color-olive) 70%, #3a4133);
+    border: 3px solid var(--color-surface);
+    outline: 2px solid var(--color-gold-bright);
+    box-shadow: 0 10px 28px rgba(43, 45, 38, 0.14);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .home-trainer__avatar img {
+    width: 100%; height: 100%; object-fit: cover;
+    display: block;
+  }
+  .home-trainer__avatar span {
+    font-family: var(--font-heading); font-weight: 600; font-size: 2.4rem;
+    color: rgba(255,255,255,0.9); line-height: 1;
+  }
+  .home-trainer__name {
+    font-family: var(--font-heading); font-weight: 600; font-size: 1.18rem;
+    color: var(--color-olive); margin: 1rem 0 0; line-height: 1.25;
+  }
+  .home-trainer__role {
+    margin: 0.45rem 0 0; padding: 0.35rem 0.75rem;
+    font-size: 0.62rem; font-weight: 600;
+    letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-gold);
+    background: var(--color-gold-muted);
+    border-radius: 999px;
+  }
+
+  .home-cta {
+    position: relative; overflow: hidden;
+    background:
+      radial-gradient(60% 60% at 80% 20%, rgba(184, 146, 58, 0.25), transparent 70%),
+      linear-gradient(150deg, #3a4133, var(--color-olive) 60%, #3a4133);
+    color: var(--color-white);
+    border-radius: 20px; padding: 3rem 2rem; margin-bottom: 1rem;
+  }
+  .home-cta__title {
+    font-family: var(--font-heading); font-size: clamp(1.7rem, 3.5vw, 2.6rem);
+    line-height: 1.15; color: var(--color-white); margin: 0.5rem 0 0; font-weight: 600;
+  }
+  .home-cta__lead { margin: 0.7rem 0 0; color: rgba(255,255,255,0.8); max-width: 36rem; }
+
+  .reveal { opacity: 0; transform: translateY(14px); transition: opacity .4s ease, transform .4s ease; }
+  .reveal.is-visible { opacity: 1; transform: translateY(0); }
+{% endblock %}
+
+{% block content %}
+  <section class="full-bleed home-hero">
+    <div class="home-hero__inner">
+      <div class="grid lg:grid-cols-[1.4fr_1fr] gap-10 items-center">
+        <div>
+          <span class="home-hero__eyebrow">школа спорта и искусства</span>
+          <h1 class="home-hero__title">
+            Школа танца<br>
+            <em>движение · стиль · характер</em>
+          </h1>
+          <p class="home-hero__lead">
+            Современная хореография для детей и взрослых. Бережно к телу, без оценки и сравнения —
+            только опыт, музыка и собственное движение.
+          </p>
+          <div class="home-hero__cta">
+            <a href="{% url 'studio:trial' %}" class="btn-primary" data-trial-open>Записаться на пробное</a>
+            <a href="{% url 'studio:contact' %}#contact-form" class="btn-ghost-light">Задать вопрос</a>
+          </div>
+        </div>
+
+        <div class="home-hero__slider" data-hero-slider>
+          <div class="home-hero__slide home-hero__slide--1 is-active">
+            <img src="{% static 'studio/img/hall.jpg' %}" alt="Зал школы" loading="eager" decoding="async">
+            <span class="home-hero__slide-caption">Репетиция в зале</span>
+          </div>
+          <div class="home-hero__slide home-hero__slide--2">
+            <img src="{% static 'studio/img/perfomance.jpg' %}" alt="Выступление учеников" loading="lazy" decoding="async">
+            <span class="home-hero__slide-caption">Выступление на сцене</span>
+          </div>
+          <div class="home-hero__slide home-hero__slide--3">
+            <img src="{% static 'studio/img/class.jpg' %}" alt="Занятие в группе" loading="lazy" decoding="async">
+            <span class="home-hero__slide-caption">Занятие в группе</span>
+          </div>
+          <div class="home-hero__dots">
+            <button class="home-hero__dot is-active" type="button" aria-label="Слайд 1"></button>
+            <button class="home-hero__dot" type="button" aria-label="Слайд 2"></button>
+            <button class="home-hero__dot" type="button" aria-label="Слайд 3"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-section reveal">
+    <div class="flex flex-wrap items-end justify-between gap-4" style="margin-bottom:1.5rem;">
+      <div>
+        <span class="home-section__label">— Направления</span>
+        <h2 class="home-section__title">Занятия для всех</h2>
+        <p class="home-section__intro">
+          От первых шагов до профессиональной хореографии. Для детей с 3 лет и для взрослых.
+        </p>
+      </div>
+      <a href="{% url 'studio:directions' %}" class="home-section__link">
+        Все направления <span aria-hidden="true">→</span>
+      </a>
+    </div>
+
+    <div class="home-dirs">
+      {% if directions %}
+        {% for d in directions %}
+          <a href="{% url 'studio:trial' %}?direction={{ d.pk }}" class="home-dir" data-trial-open data-direction="{{ d.pk }}">
+            {% if d.image %}
+              <img src="{{ d.image.url }}" alt="{{ d.name }}" loading="lazy" style="{{ d|image_focus_style }}">
+            {% else %}
+              <span class="home-dir__letter">{{ d.name|slice:":1" }}</span>
+            {% endif %}
+            <span class="home-dir__overlay"></span>
+            <div class="home-dir__body">
+              <h3 class="home-dir__title">{{ d.name }}</h3>
+              {% if d.short_description %}
+                <p class="home-dir__desc">{{ d.short_description }}</p>
+              {% endif %}
+              <span class="home-dir__cta">Записаться →</span>
+            </div>
+          </a>
+        {% endfor %}
+      {% else %}
+        <div class="home-dir"><span class="home-dir__letter">A</span><span class="home-dir__overlay"></span><div class="home-dir__body"><h3 class="home-dir__title">Современный танец</h3><p class="home-dir__desc">Для начинающих, любителей и профессионалов</p></div></div>
+        <div class="home-dir"><span class="home-dir__letter">B</span><span class="home-dir__overlay"></span><div class="home-dir__body"><h3 class="home-dir__title">Классический танец</h3><p class="home-dir__desc">Основа любой хореографии</p></div></div>
+        <div class="home-dir"><span class="home-dir__letter">C</span><span class="home-dir__overlay"></span><div class="home-dir__body"><h3 class="home-dir__title">Современный балет</h3><p class="home-dir__desc">Синтез традиции и свободы</p></div></div>
+      {% endif %}
+    </div>
+
+    <div class="home-chips">
+      <div class="home-chip">
+        <p class="home-chip__label">Для взрослых</p>
+        <p class="home-chip__text">
+          Группы для тех, кто хочет танцевать в удовольствие, держать тело в тонусе
+          и осваивать хореографию в комфортном темпе.
+        </p>
+      </div>
+      <div class="home-chip">
+        <p class="home-chip__label">Для детей и подростков</p>
+        <p class="home-chip__text">
+          Бережное обучение с учётом возраста: развиваем пластику, музыкальность
+          и уверенность — от первых шагов до выступлений на сцене.
+        </p>
+      </div>
+      <div class="home-chip">
+        <p class="home-chip__label">Для начинающих</p>
+        <p class="home-chip__text">
+          Берём тех, кто никогда не танцевал: разберём базу, научим чувствовать ритм
+          и двигаться свободно, без оценки и сравнения.
+        </p>
+      </div>
+      <div class="home-chip">
+        <p class="home-chip__label">Для профессионалов</p>
+        <p class="home-chip__text">
+          Продвинутые классы, авторские постановки и подготовка к конкурсам
+          для опытных танцоров, готовых расти дальше.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-section reveal">
+    <blockquote class="home-quote">
+      <p>
+        Когда ты испытываешь радость — она увеличивается, если её можно разделить.
+        Создавать и раздавать как можно больше позитивной энергии в мир —
+        в этом и есть смысл.
+      </p>
+      <footer>— Манифест школы</footer>
+    </blockquote>
+  </section>
+
+  <section class="home-section reveal">
+    <div class="grid lg:grid-cols-[1fr_1.3fr] gap-10 items-start">
+      <div>
+        <span class="home-section__label">— О школе</span>
+        <h2 class="home-section__title">
+          Весь современный танец.
+          <em>Бережно. Глубоко. Живо.</em>
+        </h2>
+        <p class="home-section__intro">
+          Создаём пространство, где танцуют все — от первого шага до сцены.
+          Поддерживаем на протяжении всего обучения, бережно относимся к телу,
+          уважаем индивидуальный путь.
+        </p>
+        <a href="{% url 'studio:about' %}" class="home-section__link" style="margin-top:1.25rem;">
+          Узнать о школе <span aria-hidden="true">→</span>
+        </a>
+      </div>
+
+      <ul class="home-features">
+        <li>Сильнейшие педагоги и хореографы</li>
+        <li>Поддержка на протяжении всего обучения</li>
+        <li>Бережное отношение к телу</li>
+        <li>Авторский подход к занятиям</li>
+        <li>Безопасная доверительная атмосфера</li>
+        <li>Возможности дальнейшего развития</li>
+        <li>Программы для взрослых и детей</li>
+        <li>Место, где танцуют все. Каждый.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="home-section reveal home-trainers">
+    <div class="home-trainers__head">
+      <div>
+        <span class="home-section__label">— Команда</span>
+        <h2 class="home-section__title">Наши тренеры</h2>
+        <p class="home-section__intro">
+          Хореографы и педагоги студии — каждый со своим стилем, опытом и подходом.
+        </p>
+      </div>
+    </div>
+
+    <div class="home-trainers__stage">
+    <div class="home-trainers__viewport">
+    <div class="home-trainers__track" data-trainers-track>
+      {% for t in trainers %}
+        <a href="{% url 'studio:about' %}#trainer-{{ t.pk }}" class="home-trainer">
+          <div class="home-trainer__avatar">
+            {% if t.photo %}
+              <img src="{{ t.photo.url }}" alt="{{ t.full_name }}" loading="lazy" style="{{ t|image_focus_style }}">
+            {% else %}
+              <span>{{ t.full_name|slice:":1" }}</span>
+            {% endif %}
+          </div>
+          <h3 class="home-trainer__name">{{ t.full_name }}</h3>
+          {% if t.role %}<p class="home-trainer__role">{{ t.role }}</p>{% endif %}
+        </a>
+      {% endfor %}
+    </div>
+    </div>
+      <div class="home-trainers__nav">
+        <button class="home-trainers__btn home-trainers__btn--prev" type="button" data-trainers-prev aria-label="Назад">←</button>
+        <button class="home-trainers__btn home-trainers__btn--next" type="button" data-trainers-next aria-label="Вперёд">→</button>
+      </div>
+    </div>
+  </section>
+
+  {# ─────────────────────── ГАЛЕРЕЯ ДОСТИЖЕНИЙ ─────────────────────── #}
+  <section class="home-section reveal">
+    <div class="flex flex-wrap items-end justify-between gap-4" style="margin-bottom:1.5rem;">
+      <div>
+        <span class="home-section__label">— Достижения</span>
+        <h2 class="home-section__title">Достижения и события</h2>
+      </div>
+      <a href="{% url 'studio:achievements' %}" class="home-section__link">
+        Все альбомы <span aria-hidden="true">→</span>
+      </a>
+    </div>
+
+    <div class="home-projects">
+      {% if albums %}
+        {% for album in albums %}
+          <a href="{% url 'studio:achievement_album' album.slug %}" class="home-project">
+            {% if album.cover_image %}
+              <img src="{{ album.cover_image.url }}" alt="{{ album.title }}" loading="lazy" style="{{ album|image_focus_style }}">
+            {% endif %}
+            <span class="home-project__overlay"></span>
+            <div class="home-project__body">
+              <p class="home-project__eyebrow">— Альбом</p>
+              <h3 class="home-project__title">{{ album.title }}</h3>
+              {% if album.description %}
+                <p class="home-project__desc">{{ album.description|truncatewords:18 }}</p>
+              {% endif %}
+            </div>
+          </a>
+        {% endfor %}
+      {% else %}
+        <div class="home-project">
+          <span class="home-project__overlay"></span>
+          <div class="home-project__body">
+            <p class="home-project__eyebrow">— Фестиваль</p>
+            <h3 class="home-project__title">Открытый показ года</h3>
+            <p class="home-project__desc">Ежегодная сцена для учеников и педагогов студии.</p>
+          </div>
+        </div>
+        <div class="home-project">
+          <span class="home-project__overlay"></span>
+          <div class="home-project__body">
+            <p class="home-project__eyebrow">— Танцевальная компания</p>
+            <h3 class="home-project__title">Постановки и перформансы</h3>
+            <p class="home-project__desc">Авторские работы команды студии для городских мероприятий.</p>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+
+  <section class="home-section reveal">
+    <span class="home-section__label">— Залы</span>
+    <h2 class="home-section__title" style="margin-bottom:1.5rem;">Пространства для движения</h2>
+
+    <div class="home-halls">
+      <article class="home-hall">
+        <div class="home-hall__head home-hall__head--small">
+          <img class="home-hall__img" src="{% static 'studio/img/hall_3.jpg' %}" alt="ЖК «Акварели», проспект Ленина 32Д" loading="lazy">
+          <h3 class="home-hall__title">г. Балашиха, ЖК «Акварели» проспект Ленина 32Д</h3>
+        </div>
+        <ul class="home-hall__list">
+          <li>Главная площадка школы</li>
+          <li>Группы от 3 до 18 человек</li>
+          <li>Зеркала, станки, раздевалка</li>
+        </ul>
+      </article>
+
+      <article class="home-hall">
+        <div class="home-hall__head home-hall__head--black">
+          <img class="home-hall__img" src="{% static 'studio/img/hall_2.jpg' %}" alt="проспект Ленина д.20" loading="lazy">
+          <h3 class="home-hall__title">г. Балашиха, проспект Ленина д.20</h3>
+        </div>
+        <ul class="home-hall__list">
+          <li>Большой зал для постановок</li>
+          <li>Группы до 25 человек</li>
+          <li>Студийный звук и свет</li>
+        </ul>
+      </article>
+
+      <article class="home-hall">
+        <div class="home-hall__head home-hall__head--third">
+          <img class="home-hall__img" src="{% static 'studio/img/hall_4.jpg' %}" alt="ул. Фадеева д.8" loading="lazy">
+          <h3 class="home-hall__title">г. Балашиха, ул. Фадеева д.8</h3>
+        </div>
+        <ul class="home-hall__list">
+          <li>Группы до 35 человек</li>
+          <li>Детские и подростковые направления</li>
+          <li>Спокойная атмосфера для новичков</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <section class="home-section reveal">
+    <div class="home-cta">
+      <div class="grid md:grid-cols-[1.4fr_1fr] gap-6 items-center">
+        <div>
+          <span class="home-hero__eyebrow">— Пробное занятие</span>
+          <h2 class="home-cta__title">Оставьте заявку — мы свяжемся и подберём занятие</h2>
+          <p class="home-cta__lead">Пробное доступно для всех направлений. Один визит — чтобы понять, ваше ли это.</p>
+        </div>
+        <div class="flex flex-col gap-3 md:items-end">
+          <a href="{% url 'studio:trial' %}" class="btn-primary" data-trial-open>Записаться на пробное</a>
+          <a href="{% url 'studio:contact' %}#contact-form" class="btn-ghost-light">Задать вопрос</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+{% endblock %}
+
+{% block extra_head %}
+<script>
+  (function () {
+    function initEffects() {
+      var header = document.querySelector('.site-header');
+      var topBtn = document.getElementById('back-to-top');
+      var items = document.querySelectorAll('.reveal');
+      function onScroll() {
+        var s = window.scrollY > 8;
+        if (header) header.classList.toggle('is-scrolled', s);
+        if (topBtn) topBtn.classList.toggle('is-visible', window.scrollY > 320);
+      }
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      if (topBtn) topBtn.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+      if ('IntersectionObserver' in window) {
+        var o = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('is-visible'); o.unobserve(e.target); } });
+        }, { threshold: 0.12 });
+        items.forEach(function (i) { o.observe(i); });
+      } else {
+        items.forEach(function (i) { i.classList.add('is-visible'); });
+      }
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initEffects); else initEffects();
+  })();
+</script>
+<script>
+  (function () {
+    function initTrainers() {
+      var track = document.querySelector('[data-trainers-track]');
+      if (!track) return;
+      var prev = document.querySelector('[data-trainers-prev]');
+      var next = document.querySelector('[data-trainers-next]');
+      var cards = Array.prototype.slice.call(track.querySelectorAll('.home-trainer'));
+      var n = cards.length;
+      if (n < 2) { if (prev) prev.style.display = 'none'; if (next) next.style.display = 'none'; return; }
+
+      cards.forEach(function (c) { var cl = c.cloneNode(true); cl.setAttribute('aria-hidden', 'true'); track.appendChild(cl); });
+      for (var i = n - 1; i >= 0; i--) { var cl = cards[i].cloneNode(true); cl.setAttribute('aria-hidden', 'true'); track.insertBefore(cl, track.firstChild); }
+
+      var index = n;
+      var animating = false;
+
+      function step() {
+        var items = track.children;
+        if (items.length < 2) return 0;
+        return items[1].getBoundingClientRect().left - items[0].getBoundingClientRect().left;
+      }
+      function setX(animate) {
+        track.style.transition = animate ? 'transform .5s cubic-bezier(.4,0,.2,1)' : 'none';
+        track.style.transform = 'translateX(' + (-index * step()) + 'px)';
+      }
+      function go(delta) {
+        if (animating) return;
+        animating = true;
+        index += delta;
+        setX(true);
+      }
+      track.addEventListener('transitionend', function () {
+        if (index >= 2 * n) { index -= n; setX(false); }
+        else if (index < n) { index += n; setX(false); }
+        animating = false;
+      });
+
+      if (next) next.addEventListener('click', function () { go(1); });
+      if (prev) prev.addEventListener('click', function () { go(-1); });
+      window.addEventListener('resize', function () { setX(false); });
+
+      setX(false);
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initTrainers); else initTrainers();
+  })();
+</script>
+<script>
+  (function () {
+    function initHeroSlider() {
+      var slider = document.querySelector('[data-hero-slider]');
+      if (!slider) return;
+      var slides = slider.querySelectorAll('.home-hero__slide');
+      var dots = slider.querySelectorAll('.home-hero__dot');
+      if (slides.length < 2) return;
+      var current = 0;
+      var timer;
+      function show(n) {
+        current = (n + slides.length) % slides.length;
+        slides.forEach(function (s, i) { s.classList.toggle('is-active', i === current); });
+        dots.forEach(function (d, i) { d.classList.toggle('is-active', i === current); });
+      }
+      function start() { timer = setInterval(function () { show(current + 1); }, 4500); }
+      function restart() { clearInterval(timer); start(); }
+      dots.forEach(function (d, i) {
+        d.addEventListener('click', function () { show(i); restart(); });
+      });
+      start();
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initHeroSlider); else initHeroSlider();
+  })();
+</script>
+{% endblock %}

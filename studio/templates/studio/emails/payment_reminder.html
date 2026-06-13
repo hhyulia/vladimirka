@@ -1,0 +1,34 @@
+{% extends "studio/emails/base_email.html" %}
+
+{% block email_title %}Напоминание об оплате · Vladimirka{% endblock %}
+{% block email_eyebrow %}Личный кабинет{% endblock %}
+{% block email_subtitle %}
+  <p class="email-subtitle">Напоминание об оплате занятий</p>
+{% endblock %}
+
+{% block email_content %}
+  <p>Здравствуйте, {{ user_name }}!</p>
+
+  <div class="email-alert">
+    <p class="email-alert__title">Оплата занятий</p>
+    <p>
+      Оплатите занятия {% if child_name %}ребёнка ({{ child_name }}) {% endif %}
+      до <strong>{{ reminder.payment_due_date|date:"d.m.Y" }}</strong>.
+      {% if reminder.amount %}<br>Сумма: <strong>{{ reminder.amount }} ₽</strong>.{% endif %}
+    </p>
+    {% if reminder.notes %}
+      <p style="margin-top: 10px;">{{ reminder.notes }}</p>
+    {% endif %}
+  </div>
+
+  <p>Расписание, напоминания и онлайн-оплата доступны в личном кабинете на сайте.</p>
+
+  <div class="email-btn-wrap">
+    <a href="{{ site_url }}" class="email-btn">Перейти в личный кабинет</a>
+  </div>
+{% endblock %}
+
+{% block email_footer %}
+  Вы получили это письмо, так как зарегистрированы на сайте школы «Vladimirka».<br>
+  Школа спорта и искусства «Vladimirka» · <a href="tel:+79264231333">+7 (926) 423-13-33</a>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends "studio/emails/base_email.html" %}
+
+{% block email_title %}Новая заявка на пробное · Vladimirka{% endblock %}
+{% block email_eyebrow %}Администратор{% endblock %}
+{% block email_subtitle %}
+  <p class="email-subtitle">Новая заявка на пробное занятие</p>
+{% endblock %}
+
+{% block email_content %}
+  <div class="email-card">
+    <p class="email-card__title">Заявка от {{ application.name }}</p>
+    <p>Поступила новая заявка через форму на сайте. Данные ниже.</p>
+  </div>
+
+  <table class="email-table" role="presentation">
+    <tr>
+      <th>Имя</th>
+      <td>{{ application.name }}</td>
+    </tr>
+    <tr>
+      <th>Телефон</th>
+      <td><a href="tel:{{ application.phone }}">{{ application.phone }}</a></td>
+    </tr>
+    {% if application.email %}
+    <tr>
+      <th>Email</th>
+      <td><a href="mailto:{{ application.email }}">{{ application.email }}</a></td>
+    </tr>
+    {% endif %}
+    {% if application.age %}
+    <tr>
+      <th>Возраст</th>
+      <td>{{ application.age }}</td>
+    </tr>
+    {% endif %}
+    <tr>
+      <th>Направление</th>
+      <td>{% if application.preferred_direction %}{{ application.preferred_direction.name }}{% else %}—{% endif %}</td>
+    </tr>
+    {% if application.preferred_time_note %}
+    <tr>
+      <th>Удобное время</th>
+      <td>{{ application.preferred_time_note }}</td>
+    </tr>
+    {% endif %}
+  </table>
+
+  {% if application.comment %}
+  <div class="email-card" style="margin-top: 20px;">
+    <p class="email-card__title">Комментарий</p>
+    <p>{{ application.comment|linebreaksbr }}</p>
+  </div>
+  {% endif %}
+{% endblock %}
+
+{% block email_footer %}
+  Автоматическое уведомление для администратора сайта «Vladimirka».<br>
+  Ответьте клиенту по телефону или email из заявки.
+{% endblock %}

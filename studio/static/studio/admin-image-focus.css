@@ -1,0 +1,71 @@
+.image-focus-widget {
+  max-width: 320px;
+  margin: 0.35rem 0 0.75rem;
+}
+
+.image-focus-widget--inline {
+  max-width: 140px;
+  margin-top: 0.5rem;
+}
+
+.image-focus-widget__frame {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border: 1px solid #cfc9bc;
+  border-radius: 6px;
+  background: #f5f0e2;
+  cursor: crosshair;
+}
+
+.image-focus-widget__frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+
+.image-focus-widget__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 0.75rem;
+  text-align: center;
+  font-size: 0.82rem;
+  color: #5c5e56;
+}
+
+.image-focus-widget__marker {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border: 2px solid #fff;
+  border-radius: 999px;
+  background: #9a7b2c;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+}
+
+.image-focus-widget__hint {
+  margin: 0.45rem 0 0;
+  font-size: 0.82rem;
+  color: #5c5e56;
+}
+
+.image-focus-widget--inline .image-focus-widget__hint {
+  display: none;
+}
+
+.image-focus-widget--inline .image-focus-widget__frame {
+  aspect-ratio: 1;
+}
+
+td.field-image_focus_preview,
+td.field-photo_focus_preview,
+td.field-cover_image_focus_preview {
+  min-width: 150px;
+  vertical-align: top;
+}

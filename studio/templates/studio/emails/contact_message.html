@@ -1,0 +1,41 @@
+{% extends "studio/emails/base_email.html" %}
+
+{% block email_title %}Сообщение с сайта · Vladimirka{% endblock %}
+{% block email_eyebrow %}Администратор{% endblock %}
+{% block email_subtitle %}
+  <p class="email-subtitle">Новое обращение через форму «Контакты»</p>
+{% endblock %}
+
+{% block email_content %}
+  <div class="email-card">
+    <p class="email-card__title">Сообщение от {{ msg.name }}</p>
+    <p>Клиент написал через форму обратной связи на сайте.</p>
+  </div>
+
+  <table class="email-table" role="presentation">
+    <tr>
+      <th>Имя</th>
+      <td>{{ msg.name }}</td>
+    </tr>
+    <tr>
+      <th>Email</th>
+      <td><a href="mailto:{{ msg.email }}">{{ msg.email }}</a></td>
+    </tr>
+    {% if msg.phone %}
+    <tr>
+      <th>Телефон</th>
+      <td><a href="tel:{{ msg.phone }}">{{ msg.phone }}</a></td>
+    </tr>
+    {% endif %}
+  </table>
+
+  <div class="email-card" style="margin-top: 20px;">
+    <p class="email-card__title">Текст сообщения</p>
+    <p>{{ msg.message|linebreaksbr }}</p>
+  </div>
+{% endblock %}
+
+{% block email_footer %}
+  Автоматическое уведомление для администратора сайта «Vladimirka».<br>
+  Ответьте клиенту на указанный email или телефон.
+{% endblock %}

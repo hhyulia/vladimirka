@@ -1,0 +1,232 @@
+{% extends "studio/base.html" %}
+{% load studio_extras %}
+{% block title %}{{ album.title }} · Достижения{% endblock %}
+{% block extra_css %}
+  .phone-tile {
+    border: none;
+    border-radius: 0;
+    overflow: hidden;
+    background: transparent;
+    cursor: zoom-in;
+    transition: opacity .2s ease;
+  }
+  .phone-tile:hover {
+    opacity: 0.9;
+  }
+  .phone-tile img {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    display: block;
+    background:
+      radial-gradient(120% 120% at 20% 0%, rgba(154, 123, 44, 0.22), rgba(154, 123, 44, 0.03) 50%, transparent 70%),
+      linear-gradient(145deg, #ece8dc 0%, #f8f6ef 100%);
+  }
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(18, 19, 16, 0.86);
+    z-index: 120;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+  .lightbox.is-open {
+    display: flex;
+  }
+  .lightbox__inner {
+    width: min(1000px, 96vw);
+    display: grid;
+    gap: 0.65rem;
+  }
+  .lightbox__stage {
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 14px;
+    overflow: hidden;
+    background: #10110f;
+    min-height: min(72vh, 720px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .lightbox__stage img {
+    width: 100%;
+    height: min(72vh, 720px);
+    object-fit: contain;
+    display: block;
+  }
+  .lightbox__close {
+    position: absolute;
+    top: 0.65rem;
+    right: 0.65rem;
+    width: 38px;
+    height: 38px;
+    border-radius: 99px;
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    background: rgba(0, 0, 0, 0.35);
+    color: #fff;
+    font-size: 1.15rem;
+    cursor: pointer;
+  }
+  .lightbox__controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.65rem;
+  }
+  .lightbox__nav {
+    width: 42px;
+    height: 42px;
+    border-radius: 99px;
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    background: rgba(0, 0, 0, 0.35);
+    color: #fff;
+    cursor: pointer;
+  }
+  .lightbox__meta {
+    color: rgba(255, 255, 255, 0.86);
+    font-size: 0.84rem;
+    letter-spacing: 0.03em;
+  }
+{% endblock %}
+{% block content %}
+  <div class="w-full min-w-0 space-y-8">
+    <header class="max-w-3xl border-b border-[var(--color-border)] pb-8 reveal">
+      <p class="section-label">Галерея достижений</p>
+      <h1 class="page-title mt-2">{{ album.title }}</h1>
+      {% if album.description %}
+        <p class="page-intro mb-0 mt-3">{{ album.description }}</p>
+      {% endif %}
+      <a
+        class="mt-6 inline-block text-[0.8rem] font-semibold uppercase tracking-[0.1em] text-[var(--color-gold)] no-underline hover:text-[var(--color-gold-bright)] hover:underline"
+        href="{% url 'studio:achievements' %}#{% if request.GET.from == 'featured' %}featured{% else %}gallery{% endif %}-{{ album.slug }}"
+      >
+        ← Назад к достижениям
+      </a>
+    </header>
+
+    {% if photos %}
+      <section
+        class="grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-1.5 reveal"
+        id="phone-grid"
+        aria-label="Фотографии альбома"
+      >
+        {% for photo in photos %}
+          <figure class="phone-tile" data-gallery-photo data-index="{{ forloop.counter0 }}">
+            <img
+              src="{{ photo.image.url }}"
+              alt="{{ album.title }} {{ forloop.counter }}"
+              loading="lazy"
+              style="{{ photo|image_focus_style }}"
+              data-src="{{ photo.image.url }}"
+              data-caption="{% if photo.caption %}{{ photo.caption|escape }}{% else %}{{ album.title }} · {{ forloop.counter }}{% endif %}"
+            >
+          </figure>
+        {% endfor %}
+      </section>
+    {% else %}
+      <section class="rounded-[14px] border border-dashed border-[var(--color-border)] bg-[var(--color-surface)] p-6 reveal">
+        <h3 class="m-0 text-[var(--color-olive)]" style="font-family: var(--font-heading)">Фотографии пока не добавлены</h3>
+      </section>
+    {% endif %}
+  </div>
+
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <div class="lightbox__inner">
+      <div class="lightbox__stage" id="lightbox-stage">
+        <button type="button" class="lightbox__close" id="lightbox-close" aria-label="Закрыть">×</button>
+        <img id="lightbox-image" src="" alt="">
+      </div>
+      <div class="lightbox__controls">
+        <button type="button" class="lightbox__nav" id="lightbox-prev" aria-label="Предыдущая">←</button>
+        <div class="lightbox__meta" id="lightbox-meta"></div>
+        <button type="button" class="lightbox__nav" id="lightbox-next" aria-label="Следующая">→</button>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block extra_head %}
+<script>
+  (function () {
+    function initAlbum() {
+      var items = Array.prototype.slice.call(document.querySelectorAll('[data-gallery-photo]'));
+      var lightbox = document.getElementById('lightbox');
+      var image = document.getElementById('lightbox-image');
+      var meta = document.getElementById('lightbox-meta');
+      var closeBtn = document.getElementById('lightbox-close');
+      var prevBtn = document.getElementById('lightbox-prev');
+      var nextBtn = document.getElementById('lightbox-next');
+      var stage = document.getElementById('lightbox-stage');
+      if (!items.length || !lightbox || !image || !meta || !closeBtn || !prevBtn || !nextBtn || !stage) return;
+
+      var index = 0;
+      var touchStartX = 0;
+      var touchEndX = 0;
+
+      function render() {
+        var tile = items[index];
+        var img = tile.querySelector('img');
+        image.src = img.getAttribute('data-src') || img.src;
+        image.alt = img.alt || '';
+        var caption = img.getAttribute('data-caption') || ((index + 1) + ' / ' + items.length);
+        meta.textContent = caption + '  ·  ' + (index + 1) + ' / ' + items.length;
+      }
+
+      function open(i) {
+        index = i;
+        render();
+        lightbox.classList.add('is-open');
+        lightbox.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function close() {
+        lightbox.classList.remove('is-open');
+        lightbox.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+
+      function go(step) {
+        index = (index + step + items.length) % items.length;
+        render();
+      }
+
+      items.forEach(function (item, i) {
+        item.addEventListener('click', function () { open(i); });
+      });
+
+      closeBtn.addEventListener('click', close);
+      prevBtn.addEventListener('click', function () { go(-1); });
+      nextBtn.addEventListener('click', function () { go(1); });
+      lightbox.addEventListener('click', function (e) {
+        if (e.target === lightbox) close();
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (!lightbox.classList.contains('is-open')) return;
+        if (e.key === 'Escape') close();
+        if (e.key === 'ArrowLeft') go(-1);
+        if (e.key === 'ArrowRight') go(1);
+      });
+
+      stage.addEventListener('touchstart', function (e) {
+        touchStartX = e.changedTouches[0].screenX;
+      }, { passive: true });
+      stage.addEventListener('touchend', function (e) {
+        touchEndX = e.changedTouches[0].screenX;
+        var delta = touchEndX - touchStartX;
+        if (Math.abs(delta) < 35) return;
+        if (delta > 0) go(-1); else go(1);
+      }, { passive: true });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initAlbum);
+    } else {
+      initAlbum();
+    }
+  })();
+</script>
+{% endblock %}

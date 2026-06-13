@@ -1,0 +1,486 @@
+﻿{% extends "studio/base.html" %}
+{% load static studio_extras %}
+{% block title %}Достижения · Школа спорта и искусства "Vladimirka"{% endblock %}
+
+{% block extra_css %}
+  .full-bleed {
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    width: 100vw;
+  }
+
+  .btn-primary {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 0.85rem 1.85rem; border-radius: 999px;
+    background: var(--color-gold); color: var(--color-white);
+    border: 1px solid var(--color-gold);
+    font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.14em;
+    box-shadow: 0 14px 32px rgba(154, 123, 44, 0.32); transition: background .15s, border-color .15s;
+  }
+  .btn-primary:hover { background: var(--color-gold-bright); border-color: var(--color-gold-bright); color: var(--color-white); text-decoration: none; }
+  .btn-ghost-light {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 0.85rem 1.85rem; border-radius: 999px;
+    background: transparent; color: var(--color-white);
+    border: 1px solid rgba(255,255,255,0.45);
+    font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.14em;
+    transition: background .15s, border-color .15s;
+  }
+  .btn-ghost-light:hover { background: rgba(255,255,255,0.08); border-color: var(--color-white); color: var(--color-white); text-decoration: none; }
+
+  .ach-hero {
+    position: relative; overflow: hidden;
+    margin-top: -2.5rem;
+    background:
+      radial-gradient(60% 70% at 88% 8%, rgba(212, 168, 70, 0.55), transparent 60%),
+      radial-gradient(50% 55% at 12% 100%, rgba(184, 146, 58, 0.4), transparent 65%),
+      radial-gradient(40% 45% at 50% 40%, rgba(122, 134, 86, 0.35), transparent 70%),
+      linear-gradient(135deg, #2b2d26 0%, var(--color-olive) 40%, #5c6647 70%, #2f342a 100%);
+    color: var(--color-white);
+    border: 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    box-shadow: none;
+  }
+  .ach-hero::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background:
+      radial-gradient(90% 120% at 100% 0%, rgba(212, 168, 70, 0.18), transparent 55%),
+      radial-gradient(80% 100% at 0% 100%, rgba(0, 0, 0, 0.25), transparent 55%);
+  }
+  .ach-hero__inner {
+    position: relative; z-index: 1;
+    padding: 2.25rem 1.5rem 2rem; max-width: 1120px; margin: 0 auto;
+    display: flex; flex-wrap: wrap; align-items: flex-end;
+    justify-content: space-between; gap: 1.25rem 2.5rem;
+  }
+  .ach-hero__eyebrow {
+    display: inline-flex; align-items: center; gap: 0.55rem;
+    font-size: 0.68rem; font-weight: 600; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--color-gold-bright);
+  }
+  .ach-hero__eyebrow::before {
+    content: ""; display: inline-block; width: 1.6rem; height: 1px;
+    background: var(--color-gold-bright); opacity: 0.7;
+  }
+  .ach-hero__title {
+    font-family: var(--font-heading); font-weight: 600;
+    font-size: clamp(1.9rem, 3.5vw, 2.8rem);
+    line-height: 1.1; letter-spacing: 0;
+    margin: 0.5rem 0 0; color: var(--color-white);
+  }
+  .ach-hero__title em { font-style: italic; color: var(--color-gold-bright); font-weight: 600; }
+  .ach-hero__lead {
+    margin: 0.65rem 0 0; max-width: 38rem;
+    color: rgba(255,255,255,0.82); font-size: 0.98rem; line-height: 1.6;
+  }
+  .ach-hero__stats { display: flex; gap: 1.75rem; flex-shrink: 0; }
+  .ach-hero__stat-num { font-family: var(--font-heading); font-size: 1.65rem; color: var(--color-gold-bright); margin: 0; line-height: 1.05; font-weight: 600; }
+  .ach-hero__stat-label { margin: 0.1rem 0 0; font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.6); font-weight: 600; }
+  @media (max-width: 700px) {
+    .ach-hero__stats { gap: 1.25rem; }
+    .ach-hero__stat-num { font-size: 1.4rem; }
+  }
+
+  .ach-section { margin-top: 4rem; }
+  .ach-section__label {
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--color-gold);
+  }
+  .ach-section__title {
+    font-family: var(--font-heading); font-weight: 600;
+    color: var(--color-olive);
+    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+    line-height: 1.15; margin: 0.5rem 0 0;
+  }
+  .ach-section__title em { font-style: italic; color: var(--color-olive-soft); font-weight: 600; }
+  .ach-section__intro { margin: 0.75rem 0 0; max-width: 42rem; color: var(--color-text-muted); font-size: 1.02rem; }
+
+  .ach-halls { display: flex; flex-direction: column; gap: 1.75rem; }
+  .ach-hall {
+    display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 0;
+    background: var(--color-surface); border: 1px solid var(--color-border);
+    border-radius: 18px; overflow: hidden; box-shadow: var(--shadow-soft);
+    transition: border-color .2s ease, box-shadow .2s ease;
+  }
+  .ach-hall:hover { border-color: rgba(154, 123, 44, 0.5); box-shadow: 0 20px 56px rgba(43, 45, 38, 0.14); }
+  .ach-hall:nth-child(even) { grid-template-columns: 1.1fr 0.9fr; }
+  .ach-hall:nth-child(even) .ach-hall__head { order: 2; }
+
+  .ach-hall__head {
+    position: relative; min-height: 20rem; padding: 1.85rem;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    color: var(--color-white); overflow: hidden;
+    background: linear-gradient(150deg, var(--color-olive-soft), var(--color-olive) 70%, #2b2d26);
+  }
+  .ach-hall__head img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .35s ease; }
+  .ach-hall:hover .ach-hall__head img { transform: scale(1.04); }
+  .ach-hall__head::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(180deg, rgba(18,19,16,0.05) 0%, rgba(18,19,16,0.55) 100%);
+  }
+  .ach-hall__head-letter {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-heading); font-weight: 600; font-size: 6rem;
+    color: rgba(255,255,255,0.4); line-height: 1; z-index: 0;
+  }
+  .ach-hall__head-content { position: relative; z-index: 1; }
+  .ach-hall__tag { display: block; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.85); margin: 0; }
+  .ach-hall__title { display: block; font-family: var(--font-heading); font-size: 2.1rem; line-height: 1.05; margin: 0.4rem 0 0; font-weight: 600; text-shadow: 0 2px 14px rgba(0,0,0,0.4); }
+
+  .ach-hall__body { padding: 2.25rem 2.5rem; display: flex; flex-direction: column; justify-content: center; }
+  .ach-hall__desc { margin: 0; color: var(--color-text-muted); font-size: 1.02rem; line-height: 1.7; white-space: pre-line; }
+  .ach-hall__link {
+    display: inline-flex; align-items: center; gap: 0.5rem; align-self: flex-start;
+    margin-top: 1.5rem; font-size: 0.8rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-gold);
+    transition: gap .15s ease, color .15s ease;
+  }
+  .ach-hall__link:hover { color: var(--color-gold-bright); gap: 0.85rem; text-decoration: none; }
+  @media (max-width: 860px) {
+    .ach-hall, .ach-hall:nth-child(even) { grid-template-columns: 1fr; }
+    .ach-hall:nth-child(even) .ach-hall__head { order: 0; }
+    .ach-hall__head { min-height: 0; aspect-ratio: 16 / 10; }
+    .ach-hall__body { padding: 1.85rem 1.6rem; }
+  }
+
+  .ach-carousel { position: relative; }
+  .ach-carousel__viewport { overflow: hidden; width: 100%; }
+  .ach-carousel__track { display: flex; will-change: transform; }
+  .ach-carousel__cell {
+    flex: 0 0 50%; min-width: 50%; padding: 0.25rem 0.5rem 0.5rem;
+    display: flex; justify-content: center;
+  }
+  @media (max-width: 640px) { .ach-carousel__cell { flex-basis: 100%; min-width: 100%; } }
+  .ach-carousel__cell .ach-gallery__item { width: 100%; max-width: 420px; }
+
+  .ach-carousel__btn {
+    position: absolute; top: 50%; transform: translateY(-50%); z-index: 4;
+    width: 2.85rem; height: 2.85rem; border-radius: 999px; cursor: pointer;
+    background: var(--color-surface); color: var(--color-olive);
+    border: 1px solid var(--color-border);
+    font-size: 1.15rem; line-height: 1;
+    display: inline-flex; align-items: center; justify-content: center;
+    box-shadow: var(--shadow-soft);
+    transition: background .15s, color .15s, border-color .15s;
+  }
+  .ach-carousel__btn:hover { background: var(--color-gold); border-color: var(--color-gold); color: var(--color-white); }
+  .ach-carousel__btn--prev { left: 0.4rem; }
+  .ach-carousel__btn--next { right: 0.4rem; }
+  @media (min-width: 1024px) {
+    .ach-carousel__btn { width: 3rem; height: 3rem; font-size: 1.25rem; }
+    .ach-carousel__btn--prev { left: -0.6rem; }
+    .ach-carousel__btn--next { right: -0.6rem; }
+  }
+
+  .ach-gallery__item {
+    position: relative; display: flex; flex-direction: column; justify-content: flex-end;
+    min-height: 18rem; padding: 1.35rem; text-decoration: none; overflow: hidden;
+    border: 1px solid var(--color-border); border-radius: 18px;
+    background: linear-gradient(150deg, var(--color-olive-soft), var(--color-olive) 70%, #2b2d26);
+    box-shadow: var(--shadow-soft);
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  }
+  .ach-gallery__item-bg {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+    z-index: 0; transition: transform .35s ease;
+  }
+  .ach-gallery__item::after {
+    content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background: linear-gradient(180deg, rgba(18,19,16,0.05) 0%, rgba(18,19,16,0.6) 100%);
+  }
+  .ach-gallery__item:hover {
+    transform: translateY(-3px); border-color: rgba(154, 123, 44, 0.55);
+    box-shadow: 0 18px 48px rgba(43, 45, 38, 0.16);
+  }
+  .ach-gallery__item:hover .ach-gallery__item-bg { transform: scale(1.05); }
+  .ach-gallery__caption { position: relative; z-index: 2; }
+  .ach-gallery__count {
+    display: inline-block; margin: 0 0 0.4rem; font-size: 0.62rem; font-weight: 600;
+    letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-gold-bright);
+  }
+  .ach-gallery__title {
+    margin: 0; font-family: var(--font-heading); font-weight: 600;
+    font-size: 1.4rem; line-height: 1.15; color: var(--color-white);
+    text-shadow: 0 2px 12px rgba(0,0,0,0.35);
+  }
+  .ach-gallery__empty {
+    padding: 2.5rem 1.5rem; text-align: center;
+    border: 1px dashed var(--color-border); border-radius: 18px;
+    background: var(--color-surface); color: var(--color-text-muted);
+  }
+
+  .ach-cta {
+    position: relative; overflow: hidden;
+    background:
+      radial-gradient(60% 60% at 80% 20%, rgba(184, 146, 58, 0.25), transparent 70%),
+      linear-gradient(150deg, #3a4133, var(--color-olive) 60%, #3a4133);
+    color: var(--color-white);
+    border-radius: 20px; padding: 3rem 2rem; margin-bottom: 1rem;
+  }
+  .ach-cta__eyebrow {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--color-gold-bright);
+  }
+  .ach-cta__eyebrow::before { content: ""; display: inline-block; width: 2rem; height: 1px; background: var(--color-gold-bright); opacity: 0.7; }
+  .ach-cta__title {
+    font-family: var(--font-heading); font-size: clamp(1.7rem, 3.5vw, 2.6rem);
+    line-height: 1.15; color: var(--color-white); margin: 0.5rem 0 0; font-weight: 600;
+  }
+  .ach-cta__lead { margin: 0.7rem 0 0; color: rgba(255,255,255,0.8); max-width: 36rem; }
+
+  .reveal { opacity: 0; transform: translateY(14px); transition: opacity .4s ease, transform .4s ease; }
+  .reveal.is-visible { opacity: 1; transform: translateY(0); }
+{% endblock %}
+
+{% block content %}
+  <section class="full-bleed ach-hero">
+    <div class="ach-hero__inner">
+      <div>
+        <span class="ach-hero__eyebrow">Достижения</span>
+        <h1 class="ach-hero__title">Наши <em>победы и моменты</em></h1>
+        <p class="ach-hero__lead">
+          Конкурсы, фестивали, отчётные концерты и закулисье школы. Здесь мы
+          собираем то, чем по-настоящему гордимся — вместе с нашими учениками.
+        </p>
+      </div>
+      <div class="ach-hero__stats">
+        <div>
+          <p class="ach-hero__stat-num">{{ albums_count }}</p>
+          <p class="ach-hero__stat-label">Альбомов</p>
+        </div>
+        <div>
+          <p class="ach-hero__stat-num">{{ photos_count }}</p>
+          <p class="ach-hero__stat-label">Фотографий</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {% if featured %}
+    <section class="ach-section reveal">
+      <div style="margin-bottom:1.75rem;">
+        <span class="ach-section__label">— Главное</span>
+        <h2 class="ach-section__title">Избранные достижения</h2>
+      </div>
+
+      <div class="ach-halls">
+        {% for album in featured %}
+          <article class="ach-hall" id="featured-{{ album.slug }}">
+            <a
+              class="ach-hall__head"
+              href="{% url 'studio:achievement_album' album.slug %}?from=featured"
+              aria-label="Открыть альбом «{{ album.title }}»"
+            >
+              {% if album.cover_image %}
+                <img src="{{ album.cover_image.url }}" alt="{{ album.title }}" loading="lazy" style="{{ album|image_focus_style }}">
+              {% else %}
+                <span class="ach-hall__head-letter">{{ album.title|slice:":1" }}</span>
+              {% endif %}
+              <span class="ach-hall__head-content">
+                <span class="ach-hall__title">{{ album.title }}</span>
+              </span>
+            </a>
+            <div class="ach-hall__body">
+              <p class="ach-hall__desc">{% if album.featured_text %}{{ album.featured_text }}{% elif album.description %}{{ album.description }}{% endif %}</p>
+              <a class="ach-hall__link" href="{% url 'studio:achievement_album' album.slug %}?from=featured">
+                Смотреть альбом →
+              </a>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+
+  <section class="ach-section reveal">
+    <div style="margin-bottom:1.75rem;">
+      <span class="ach-section__label">— Галерея</span>
+      <h2 class="ach-section__title">Все альбомы достижений</h2>
+    </div>
+
+    {% if albums %}
+      <div class="ach-carousel" data-ach-carousel>
+        <div class="ach-carousel__viewport" data-ach-viewport>
+          <div class="ach-carousel__track" data-ach-track>
+            {% for album in albums %}
+              <div class="ach-carousel__cell" id="gallery-{{ album.slug }}">
+                <a class="ach-gallery__item" href="{% url 'studio:achievement_album' album.slug %}?from=gallery">
+                  {% if album.cover_image %}
+                    <img class="ach-gallery__item-bg" src="{{ album.cover_image.url }}" alt="{{ album.title }}" loading="lazy" style="{{ album|image_focus_style }}">
+                  {% endif %}
+                  <span class="ach-gallery__caption">
+                    <span class="ach-gallery__count">Альбом</span>
+                    <span class="ach-gallery__title">{{ album.title }}</span>
+                  </span>
+                </a>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+        <button class="ach-carousel__btn ach-carousel__btn--prev" type="button" data-ach-prev aria-label="Предыдущие альбомы">←</button>
+        <button class="ach-carousel__btn ach-carousel__btn--next" type="button" data-ach-next aria-label="Следующие альбомы">→</button>
+      </div>
+    {% endif %}
+  </section>
+
+  <section class="ach-section reveal">
+    <div class="ach-cta">
+      <div class="grid md:grid-cols-[1.4fr_1fr] gap-6 items-center">
+        <div>
+          <span class="ach-cta__eyebrow">— Пробное занятие</span>
+          <h2 class="ach-cta__title">Хотите оказаться в этой галерее?</h2>
+          <p class="ach-cta__lead">Начните с пробного занятия — мы свяжемся, подберём направление и группу.</p>
+        </div>
+        <div class="flex flex-col gap-3 md:items-end">
+          <a href="{% url 'studio:trial' %}" class="btn-primary" data-trial-open>Записаться на пробное</a>
+          <a href="{% url 'studio:contact' %}#contact-form" class="btn-ghost-light">Задать вопрос</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+{% endblock %}
+
+{% block extra_head %}
+<script>
+  (function () {
+    function initEffects() {
+      var header = document.querySelector('.site-header');
+      var topBtn = document.getElementById('back-to-top');
+      var items = document.querySelectorAll('.reveal');
+      function onScroll() {
+        var s = window.scrollY > 8;
+        if (header) header.classList.toggle('is-scrolled', s);
+        if (topBtn) topBtn.classList.toggle('is-visible', window.scrollY > 320);
+      }
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      if (topBtn) topBtn.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+      if ('IntersectionObserver' in window) {
+        var o = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('is-visible'); o.unobserve(e.target); } });
+        }, { threshold: 0.08 });
+        items.forEach(function (i) { o.observe(i); });
+      } else {
+        items.forEach(function (i) { i.classList.add('is-visible'); });
+      }
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initEffects); else initEffects();
+  })();
+</script>
+<script>
+  (function () {
+    function initAchCarousel() {
+      var root = document.querySelector('[data-ach-carousel]');
+      if (!root) return;
+      var track = root.querySelector('[data-ach-track]');
+      var prevBtn = root.querySelector('[data-ach-prev]');
+      var nextBtn = root.querySelector('[data-ach-next]');
+      if (!track || !track.children.length) return;
+
+      /** Прокрутить карусель к альбому по slug (для возврата с hash) */
+      function rotateToGalleryAlbum(slug) {
+        var target = document.getElementById('gallery-' + slug);
+        if (!target || !track.contains(target)) return;
+        var guard = track.children.length + 1;
+        while (track.firstElementChild !== target && guard > 0) {
+          track.insertBefore(track.lastElementChild, track.firstElementChild);
+          guard -= 1;
+        }
+        track.style.transition = 'none';
+        track.style.transform = 'translateX(0)';
+      }
+
+      /** Вернуть пользователя к альбому после «Назад к достижениям» */
+      function openAlbumFromHash() {
+        var hash = location.hash.replace(/^#/, '');
+        if (!hash) return;
+        var el = document.getElementById(hash);
+        if (!el) return;
+        if (hash.indexOf('gallery-') === 0) {
+          rotateToGalleryAlbum(hash.slice('gallery-'.length));
+        }
+        requestAnimationFrame(function () {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+      }
+
+      openAlbumFromHash();
+      window.addEventListener('hashchange', openAlbumFromHash);
+
+      if (track.children.length < 2) {
+        if (prevBtn) prevBtn.style.display = 'none';
+        if (nextBtn) nextBtn.style.display = 'none';
+        return;
+      }
+
+      var DURATION = 'transform .5s cubic-bezier(.4,0,.2,1)';
+      var animating = false;
+
+      function firstWidth() {
+        return track.firstElementChild.getBoundingClientRect().width;
+      }
+
+      function onEnd(cb) {
+        function handler(e) {
+          if (e.target !== track || e.propertyName !== 'transform') return;
+          track.removeEventListener('transitionend', handler);
+          cb();
+        }
+        track.addEventListener('transitionend', handler);
+      }
+
+      function next() {
+        if (animating) return;
+        animating = true;
+        var w = firstWidth();
+        track.style.transition = DURATION;
+        track.style.transform = 'translateX(' + (-w) + 'px)';
+        onEnd(function () {
+          track.style.transition = 'none';
+          track.appendChild(track.firstElementChild);
+          track.style.transform = 'translateX(0)';
+          void track.offsetWidth;
+          animating = false;
+        });
+      }
+
+      function prev() {
+        if (animating) return;
+        animating = true;
+        track.style.transition = 'none';
+        track.insertBefore(track.lastElementChild, track.firstElementChild);
+        var w = firstWidth();
+        track.style.transform = 'translateX(' + (-w) + 'px)';
+        void track.offsetWidth;
+        track.style.transition = DURATION;
+        track.style.transform = 'translateX(0)';
+        onEnd(function () {
+          track.style.transition = 'none';
+          animating = false;
+        });
+      }
+
+      if (nextBtn) nextBtn.addEventListener('click', next);
+      if (prevBtn) prevBtn.addEventListener('click', prev);
+
+      var viewport = root.querySelector('[data-ach-viewport]');
+      if (viewport) {
+        var startX = 0;
+        viewport.addEventListener('touchstart', function (e) { startX = e.changedTouches[0].screenX; }, { passive: true });
+        viewport.addEventListener('touchend', function (e) {
+          var delta = e.changedTouches[0].screenX - startX;
+          if (Math.abs(delta) < 35) return;
+          if (delta < 0) next(); else prev();
+        }, { passive: true });
+      }
+
+      window.addEventListener('resize', function () {
+        if (!animating) { track.style.transition = 'none'; track.style.transform = 'translateX(0)'; }
+      });
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initAchCarousel); else initAchCarousel();
+  })();
+</script>
+{% endblock %}

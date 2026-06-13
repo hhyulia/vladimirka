@@ -1,0 +1,104 @@
+/* Jazzmin (AdminLTE 4 / Bootstrap 5) — фирменные цвета школы «Vladimirka».
+   Цель по ID (#jazzy-navbar / #jazzy-sidebar) — надёжно перебивает стили темы. */
+:root {
+  --vl-olive: #4a5240;
+  --vl-olive-soft: #6b7349;
+  --vl-gold: #9a7b2c;
+  --vl-gold-bright: #b8923a;
+
+  /* Bootstrap-акценты на золотой */
+  --bs-primary: #9a7b2c;
+  --bs-primary-rgb: 154, 123, 44;
+  --bs-link-color: #9a7b2c;
+  --bs-link-color-rgb: 154, 123, 44;
+  --bs-link-hover-color: #b8923a;
+  --bs-link-hover-color-rgb: 184, 146, 58;
+}
+
+/* ── Верхняя панель ── */
+#jazzy-navbar.app-header,
+#jazzy-navbar.navbar {
+  background-color: var(--vl-olive) !important;
+  border-bottom: none !important;
+}
+#jazzy-navbar .nav-link,
+#jazzy-navbar .nav-link i,
+#jazzy-navbar .btn,
+#jazzy-navbar .navbar-nav .nav-link {
+  color: #ffffff !important;
+}
+#jazzy-navbar .nav-link:hover,
+#jazzy-navbar .nav-link:hover i { color: var(--vl-gold-bright) !important; }
+#jazzy-navbar .btn-navbar { color: #fff !important; }
+#jazzy-navbar .form-control-navbar { border-color: rgba(255, 255, 255, 0.35); }
+
+/* ── Боковое меню ── */
+#jazzy-sidebar.app-sidebar {
+  background-color: var(--vl-olive) !important;
+}
+#jazzy-sidebar .sidebar-brand,
+#jazzy-sidebar .brand-link {
+  background-color: var(--vl-olive) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+#jazzy-sidebar .brand-text,
+#jazzy-sidebar .user-panel .info a,
+#jazzy-sidebar .user-panel .info span { color: #fff !important; }
+#jazzy-sidebar .sidebar-menu .nav-link {
+  color: rgba(255, 255, 255, 0.82) !important;
+}
+#jazzy-sidebar .sidebar-menu .nav-link p { color: inherit !important; }
+#jazzy-sidebar .sidebar-menu .nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  color: #fff !important;
+}
+#jazzy-sidebar .sidebar-menu .nav-link.active {
+  background-color: var(--vl-gold) !important;
+  color: #fff !important;
+}
+#jazzy-sidebar .nav-header { color: rgba(255, 255, 255, 0.5) !important; }
+
+/* ── Кнопки primary (Bootstrap 5) ── */
+.btn-primary {
+  --bs-btn-bg: var(--vl-gold);
+  --bs-btn-border-color: var(--vl-gold);
+  --bs-btn-hover-bg: var(--vl-gold-bright);
+  --bs-btn-hover-border-color: var(--vl-gold-bright);
+  --bs-btn-active-bg: var(--vl-gold-bright);
+  --bs-btn-active-border-color: var(--vl-gold-bright);
+  --bs-btn-disabled-bg: var(--vl-gold);
+  --bs-btn-disabled-border-color: var(--vl-gold);
+}
+.btn-outline-primary {
+  --bs-btn-color: var(--vl-gold);
+  --bs-btn-border-color: var(--vl-gold);
+  --bs-btn-hover-bg: var(--vl-gold);
+  --bs-btn-hover-border-color: var(--vl-gold);
+}
+
+/* ── Ссылки и акценты ── */
+a { color: var(--vl-gold); }
+a:hover { color: var(--vl-gold-bright); }
+.text-primary { color: var(--vl-gold) !important; }
+.bg-primary { background-color: var(--vl-olive) !important; }
+
+/* ── Вкладки формы ── */
+.nav-tabs .nav-link.active {
+  border-top: 2px solid var(--vl-gold) !important;
+  color: var(--vl-olive) !important;
+  font-weight: 600;
+}
+
+/* ── Поля в фокусе ── */
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--vl-gold-bright) !important;
+  box-shadow: 0 0 0 0.2rem rgba(154, 123, 44, 0.2) !important;
+}
+
+/* ── Пагинация ── */
+.page-item.active .page-link {
+  background-color: var(--vl-gold) !important;
+  border-color: var(--vl-gold) !important;
+}
+.page-link { color: var(--vl-gold); }

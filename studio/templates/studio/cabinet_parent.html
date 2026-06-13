@@ -1,0 +1,245 @@
+﻿{% extends "studio/base.html" %}
+{% block title %}Личный кабинет · Школа спорта и искусства "Vladimirka"{% endblock %}
+{% block extra_css %}
+  .cabinet-page { margin-top: 2.5rem; }
+  .cabinet-page .btn { border-radius: 12px; }
+  .cabinet-page .field input { border-radius: 12px; }
+  .cabinet-page .card { border-radius: 18px; }
+{% endblock %}
+{% block content %}
+  <section class="auth-hero">
+    <div class="auth-hero__inner">
+      <span class="auth-hero__eyebrow">Личный кабинет</span>
+      <h1 class="auth-hero__title">{{ profile.full_name }}</h1>
+      <p class="auth-hero__lead">Следите за расписанием детей и оплачивайте занятия онлайн.</p>
+    </div>
+  </section>
+
+  <div class="cabinet-page">
+
+  <div class="cabinet-grid reveal">
+    <div class="cabinet-payment-card">
+      <p class="cabinet-info-card__label">Оплата занятий</p>
+      {% if active_child and active_child.student_id %}
+        {% if reminder and reminder.is_amount_valid and yookassa_enabled %}
+          <form method="post" action="{% url 'studio:payment_create' %}">
+            {% csrf_token %}
+            <input type="hidden" name="child_id" value="{{ active_child.pk }}">
+            <button type="submit" class="btn">Оплатить за {{ active_child.full_name }}</button>
+          </form>
+          <p class="btn-hint">Сумма к оплате: <strong>{{ reminder.amount }} ₽</strong>.</p>
+        {% elif reminder and not reminder.is_amount_valid %}
+          <button class="btn btn--disabled" disabled>Оплатить за {{ active_child.full_name }}</button>
+          <p class="btn-hint">
+            Сумма {{ reminder.amount }} ₽ некорректна. Обратитесь к администратору.
+          </p>
+        {% elif reminder %}
+          <button class="btn btn--disabled" disabled title="Укажите секретный ключ ЮKassa">
+            Оплатить онлайн
+          </button>
+          <p class="btn-hint">
+            Укажите <code>YOOKASSA_SHOP_ID</code> и <code>YOOKASSA_SECRET_KEY</code>
+            в файле <code>.env</code> и перезапустите сервер.
+          </p>
+        {% else %}
+          <button class="btn btn--disabled" disabled>Оплатить за {{ active_child.full_name }}</button>
+          {% if upcoming_reminder %}
+            <p class="btn-hint">
+              Кнопка оплаты станет доступна <strong>{{ upcoming_reminder.payment_available_from|date:"d.m.Y" }}</strong>
+              (за 15 дней до срока — оплата до {{ upcoming_reminder.payment_due_date|date:"d.m.Y" }}).
+            </p>
+          {% else %}
+            <p class="btn-hint">
+              Кнопка станет доступна, когда появится напоминание об оплате. Обратитесь к администратору.
+            </p>
+          {% endif %}
+        {% endif %}
+      {% elif children %}
+        <p class="btn-hint">Выберите ребёнка с привязанным аккаунтом на сайте, чтобы оплатить занятия онлайн.</p>
+      {% else %}
+        <p class="btn-hint">Добавьте ребёнка в кабинет и привяжите его логин — тогда станет доступна онлайн-оплата.</p>
+      {% endif %}
+    </div>
+
+    <div class="cabinet-logout-card">
+      <p class="cabinet-logout-card__name">Управление аккаунтом</p>
+      <a href="{% url 'studio:account_settings' %}" class="btn" style="margin-bottom:0.6rem;">Настройки аккаунта</a>
+      <a href="{% url 'studio:logout' %}" class="btn btn--outline">Выйти</a>
+    </div>
+  </div>
+
+  <h2 class="section-title reveal">Мои дети</h2>
+
+  <details class="add-child-details reveal">
+    <summary class="add-child-summary">+ Добавить ребёнка</summary>
+    <div class="add-child-form">
+      <p class="form-panel__hint" style="margin-top: 0; margin-bottom: 1.25rem;">
+        Укажите <strong>логин</strong> ребёнка. Обратитесь к администратору для получения логина.
+      </p>
+      <form method="post" novalidate>
+        {% csrf_token %}
+        <input type="hidden" name="action" value="add_child">
+        <div class="child-fieldset">
+          <div class="field">
+            <label for="new_child_username">Логин ребёнка</label>
+            <input type="text" id="new_child_username" name="new_child_username"
+                   placeholder="ivanov_ivan" maxlength="150"
+                   value="{{ request.POST.new_child_username|default:'' }}">
+          </div>
+        </div>
+        <button type="submit" class="btn">Добавить</button>
+      </form>
+    </div>
+  </details>
+
+  {% if children %}
+    {% if children|length > 1 %}
+      <div class="child-tabs reveal">
+        {% for child in children %}
+          <a href="?child={{ child.pk }}"
+             class="child-tab{% if child == active_child %} child-tab--active{% endif %}">
+            {{ child.full_name }}
+          </a>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% if active_child %}
+      {% if reminder %}
+        <div class="reminder-banner reveal">
+          <span class="reminder-banner__icon">⚠</span>
+          <div>
+            <strong>Напоминание об оплате</strong>
+            <p>Оплатите <strong>{{ reminder.amount }} ₽</strong> за занятия
+              {{ active_child.full_name }} до
+              <strong>{{ reminder.payment_due_date|date:"d.m.Y" }}</strong>.
+              {% if reminder.notes %}{{ reminder.notes }}{% endif %}</p>
+          </div>
+        </div>
+      {% endif %}
+
+      <div class="child-profile-card reveal">
+        <p class="cabinet-info-card__label">ФИО ребёнка</p>
+        <p class="cabinet-info-card__value">{{ active_child.full_name }}</p>
+        <p class="cabinet-info-card__label">Группа</p>
+        <p class="cabinet-info-card__value">
+          {% with g=active_child.effective_group %}
+            {% if g %}{{ g.name }}{% else %}<span class="empty">Не назначена</span>{% endif %}
+          {% endwith %}
+        </p>
+      </div>
+
+      {% with g=active_child.effective_group %}
+        {% if g %}
+          <div class="card reveal">
+            <h3>{{ g.name }}</h3>
+            {% if slots_by_day %}
+              <div class="group-slots">
+                <span class="group-slots__label">Расписание занятий</span>
+                <div class="group-days">
+                  {% for day in slots_by_day %}
+                    <div class="group-day">
+                      <div class="group-day__header">{{ day.day_label }}</div>
+                      <div class="group-day__slots">
+                        {% for slot in day.slots %}
+                          <div class="group-day__slot">
+                            <p class="group-day__direction"{% if slot.direction %} title="{{ slot.direction.name }}"{% endif %}>
+                              {% if slot.direction %}{{ slot.direction.name }}{% else %}&nbsp;{% endif %}
+                            </p>
+                            <p class="group-day__time">{{ slot.start_time|time:"H:i" }} — {{ slot.end_time|time:"H:i" }}</p>
+                            <p class="group-day__meta group-day__meta--teacher"{% if slot.teacher_display %} title="{{ slot.teacher_display }}"{% endif %}>
+                              {% if slot.teacher_display %}{{ slot.teacher_display }}{% else %}&nbsp;{% endif %}
+                            </p>
+                            <p class="group-day__meta group-day__meta--hall"{% if slot.hall_display %} title="{{ slot.hall_display }}"{% endif %}>
+                              {% if slot.hall_display %}{{ slot.hall_display }}{% else %}&nbsp;{% endif %}
+                            </p>
+                          </div>
+                        {% endfor %}
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+            {% else %}
+              <p class="empty">Занятия для этой группы ещё не добавлены.</p>
+            {% endif %}
+          </div>
+        {% else %}
+          <p class="empty reveal" style="margin-top:1rem;">Группа не назначена. Обратитесь к администратору.</p>
+        {% endif %}
+      {% endwith %}
+    {% endif %}
+  {% else %}
+    <p class="empty reveal" style="margin-top:0.5rem;"> Добавьте ребёнка с помощью формы выше.</p>
+  {% endif %}
+  </div>
+
+<style>
+  .btn--danger {
+    background-color: transparent;
+    color: #b94040;
+    border: 1px solid #b94040;
+    font-size: 0.85em;
+    padding: 0.4rem 1rem;
+  }
+  .btn--danger:hover {
+    background-color: #b94040;
+    color: #fff;
+  }
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(43, 45, 38, 0.45);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal {
+    background: var(--color-surface);
+    border-radius: 6px;
+    padding: 2rem 2.5rem;
+    max-width: 380px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(43,45,38,0.18);
+  }
+  .modal__icon {
+    font-size: 2rem;
+    margin: 0 0 0.5rem;
+  }
+  .modal__message {
+    margin: 0 0 1.25rem;
+    line-height: 1.6;
+    color: #2b2d26;
+  }
+</style>
+{% endblock %}
+{% block extra_head %}
+<script>
+  (function () {
+    function initEffects() {
+      var header = document.querySelector('.site-header');
+      var topBtn = document.getElementById('back-to-top');
+      var items = document.querySelectorAll('.reveal');
+      function onScroll() {
+        var s = window.scrollY > 8;
+        if (header) header.classList.toggle('is-scrolled', s);
+        if (topBtn) topBtn.classList.toggle('is-visible', window.scrollY > 320);
+      }
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      if (topBtn) topBtn.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+      if ('IntersectionObserver' in window) {
+        var o = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('is-visible'); o.unobserve(e.target); } });
+        }, { threshold: 0.16 });
+        items.forEach(function (i) { o.observe(i); });
+      } else {
+        items.forEach(function (i) { i.classList.add('is-visible'); });
+      }
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initEffects); else initEffects();
+  })();
+</script>
+{% endblock %}

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>{% block email_title %}Школа спорта и искусства Vladimirka{% endblock %}</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100% !important;
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+      background-color: #ebe6d4;
+      font-family: "DM Sans", "Segoe UI", system-ui, Arial, sans-serif;
+      color: #2b2d26;
+    }
+    table { border-collapse: collapse; mso-table-lspace: 0; mso-table-rspace: 0; }
+    img { border: 0; outline: none; text-decoration: none; }
+    a { color: #9a7b2c; text-decoration: none; }
+    .email-bg {
+      width: 100%;
+      background-color: #ebe6d4;
+      background-image: linear-gradient(180deg, #f0e9d4 0%, #ebe6d4 42%, #e4dcc4 100%);
+      padding: 32px 16px;
+    }
+    .email-wrap {
+      width: 100%;
+      max-width: 600px;
+      background-color: #f5f0e2;
+      border: 1px solid #cfc9bc;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 12px 40px rgba(43, 45, 38, 0.08);
+    }
+    .email-header {
+      padding: 28px 32px 24px;
+      background: linear-gradient(135deg, #2b2d26 0%, #4a5240 40%, #5c6647 70%, #2f342a 100%);
+      color: #ffffff;
+      text-align: left;
+    }
+    .email-eyebrow {
+      margin: 0 0 10px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #d4a846;
+    }
+    .email-eyebrow-line {
+      display: inline-block;
+      width: 26px;
+      height: 1px;
+      background: #d4a846;
+      vertical-align: middle;
+      margin-right: 8px;
+      opacity: 0.85;
+    }
+    .email-brand {
+      margin: 0;
+      font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+      font-size: 28px;
+      font-weight: 600;
+      line-height: 1.15;
+      color: #ffffff;
+    }
+    .email-brand em {
+      font-style: italic;
+      color: #d4a846;
+    }
+    .email-subtitle {
+      margin: 8px 0 0;
+      font-size: 14px;
+      line-height: 1.5;
+      color: rgba(255, 255, 255, 0.82);
+    }
+    .email-body {
+      padding: 32px;
+      background-color: #f5f0e2;
+    }
+    .email-body p {
+      margin: 0 0 16px;
+      font-size: 15px;
+      line-height: 1.65;
+      color: #2b2d26;
+    }
+    .email-body p:last-child { margin-bottom: 0; }
+    .email-card {
+      margin: 24px 0;
+      padding: 20px 22px;
+      background: linear-gradient(180deg, #faf6eb 0%, #f0e8d4 100%);
+      border: 1px solid #cfc9bc;
+      border-left: 4px solid #9a7b2c;
+      border-radius: 14px;
+    }
+    .email-card__title {
+      margin: 0 0 8px;
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: #4a5240;
+      line-height: 1.2;
+    }
+    .email-card p {
+      margin: 0;
+      color: #5c5e56;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .email-alert {
+      margin: 24px 0;
+      padding: 18px 20px;
+      background-color: #fff8e6;
+      border: 1px solid #d4a017;
+      border-left: 4px solid #d4a017;
+      border-radius: 14px;
+    }
+    .email-alert__title {
+      margin: 0 0 6px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #7a5500;
+    }
+    .email-alert p {
+      margin: 0;
+      color: #5c4500;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .email-table {
+      width: 100%;
+      margin-top: 8px;
+      border-collapse: collapse;
+    }
+    .email-table th,
+    .email-table td {
+      padding: 12px 0;
+      border-bottom: 1px solid #dfdac6;
+      text-align: left;
+      vertical-align: top;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .email-table tr:last-child th,
+    .email-table tr:last-child td { border-bottom: none; }
+    .email-table th {
+      width: 34%;
+      padding-right: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #9a7b2c;
+    }
+    .email-table td { color: #2b2d26; }
+    .email-code {
+      display: inline-block;
+      margin: 8px 0;
+      padding: 16px 28px;
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: 0.28em;
+      font-family: "Courier New", Courier, monospace;
+      color: #2b2d26;
+      background: #f0eee8;
+      border: 1px solid #cfc9bc;
+      border-left: 4px solid #9a7b2c;
+      border-radius: 12px;
+    }
+    .email-btn-wrap { text-align: center; margin: 28px 0 8px; }
+    .email-btn {
+      display: inline-block;
+      padding: 14px 28px;
+      background-color: #9a7b2c;
+      color: #ffffff !important;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 12px;
+      box-shadow: 0 10px 26px rgba(154, 123, 44, 0.28);
+    }
+    .email-note {
+      margin-top: 20px;
+      padding: 14px 16px;
+      background-color: #f0eee8;
+      border: 1px solid #dfdac6;
+      border-radius: 12px;
+      font-size: 12px;
+      line-height: 1.55;
+      color: #5c5e56;
+      word-break: break-all;
+    }
+    .email-footer {
+      padding: 18px 32px 24px;
+      background-color: #dfdac6;
+      border-top: 1px solid #cfc9bc;
+      text-align: center;
+      font-size: 12px;
+      line-height: 1.55;
+      color: #5c5e56;
+    }
+    .email-footer a { color: #9a7b2c; }
+    @media only screen and (max-width: 620px) {
+      .email-bg { padding: 16px 10px; }
+      .email-header, .email-body, .email-footer { padding-left: 20px; padding-right: 20px; }
+      .email-brand { font-size: 24px; }
+      .email-code { font-size: 26px; letter-spacing: 0.18em; padding: 14px 18px; }
+    }
+  </style>
+</head>
+<body>
+  <table role="presentation" class="email-bg" width="100%" cellpadding="0" cellspacing="0">
+    <tr>
+      <td align="center">
+        <table role="presentation" class="email-wrap" width="600" cellpadding="0" cellspacing="0">
+          <tr>
+            <td class="email-header">
+              <p class="email-eyebrow">
+                <span class="email-eyebrow-line"></span>{% block email_eyebrow %}Школа спорта и искусства{% endblock %}
+              </p>
+              <h1 class="email-brand">{% block email_heading %}<em>Vladimirka</em>{% endblock %}</h1>
+              {% block email_subtitle %}{% endblock %}
+            </td>
+          </tr>
+          <tr>
+            <td class="email-body">
+              {% block email_content %}{% endblock %}
+            </td>
+          </tr>
+          <tr>
+            <td class="email-footer">
+              {% block email_footer %}
+                Школа спорта и искусства «Vladimirka» · проспект Ленина, 32Д, Балашиха<br>
+                <a href="tel:+79264231333">+7 (926) 423-13-33</a>
+              {% endblock %}
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

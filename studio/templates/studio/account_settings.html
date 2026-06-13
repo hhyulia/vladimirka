@@ -1,0 +1,116 @@
+{% extends "studio/base.html" %}
+{% block title %}Настройки аккаунта · Школа спорта и искусства "Vladimirka"{% endblock %}
+{% block extra_css %}
+  .settings-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.75rem;
+    align-items: start;
+  }
+  @media (max-width: 860px) {
+    .settings-grid { grid-template-columns: 1fr; }
+  }
+{% endblock %}
+{% block flash_messages %}{% endblock %}
+{% block content %}
+  <section class="auth-hero">
+    <div class="auth-hero__inner">
+      <span class="auth-hero__eyebrow">Личный кабинет</span>
+      <h1 class="auth-hero__title">Настройки <em>аккаунта</em></h1>
+      <p class="auth-hero__lead">
+        Здесь вы можете изменить логин и пароль для входа в личный кабинет.
+        Текущий логин: <strong>{{ request.user.username }}</strong>.
+      </p>
+    </div>
+  </section>
+
+  <section class="auth-section">
+    {% if messages %}
+      {% for message in messages %}
+        <div class="form-success reveal is-visible" role="status" style="margin-bottom:1.75rem;">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+    <div class="settings-grid">
+      <div class="auth-panel">
+        <div class="auth-section__head" style="margin-bottom:1rem;">
+          <span class="auth-section__label">— Логин</span>
+          <h2 class="auth-section__title">Сменить логин</h2>
+        </div>
+        <p class="form-panel__hint" style="margin-top:0; margin-bottom:1.25rem;">
+          После смены логина входить в кабинет нужно будет уже с новым логином.
+        </p>
+        <form method="post" novalidate>
+          {% csrf_token %}
+          <input type="hidden" name="action" value="change_username">
+          {% if username_form.non_field_errors %}
+            <ul class="errorlist">{% for e in username_form.non_field_errors %}<li>{{ e }}</li>{% endfor %}</ul>
+          {% endif %}
+          {% for field in username_form %}
+            <div class="field">
+              {{ field.label_tag }}
+              {{ field }}
+              {% if field.help_text %}<p class="form-panel__hint" style="margin:0.35rem 0 0;">{{ field.help_text }}</p>{% endif %}
+              {% if field.errors %}<ul class="errorlist">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+            </div>
+          {% endfor %}
+          <button type="submit" class="btn">Сохранить логин</button>
+        </form>
+      </div>
+
+      <div class="auth-panel">
+        <div class="auth-section__head" style="margin-bottom:1rem;">
+          <span class="auth-section__label">— Пароль</span>
+          <h2 class="auth-section__title">Сменить пароль</h2>
+        </div>
+        <p class="form-panel__hint" style="margin-top:0; margin-bottom:1.25rem;">
+          Введите текущий пароль и придумайте новый. Минимальная длина — 8 символов.
+        </p>
+        <form method="post" novalidate>
+          {% csrf_token %}
+          <input type="hidden" name="action" value="change_password">
+          {% if password_form.non_field_errors %}
+            <ul class="errorlist">{% for e in password_form.non_field_errors %}<li>{{ e }}</li>{% endfor %}</ul>
+          {% endif %}
+          {% for field in password_form %}
+            <div class="field">
+              {{ field.label_tag }}
+              {{ field }}
+              {% if field.errors %}<ul class="errorlist">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+            </div>
+          {% endfor %}
+          <button type="submit" class="btn">Сохранить пароль</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="auth-links" style="max-width:none;">
+      <a href="{% url 'studio:cabinet' %}" class="auth-link">
+        <span>← Вернуться в личный кабинет</span>
+        <span class="auth-link__arrow">→</span>
+      </a>
+    </div>
+  </section>
+{% endblock %}
+{% block extra_head %}
+<script>
+  (function () {
+    function initEffects() {
+      var header = document.querySelector('.site-header');
+      var topBtn = document.getElementById('back-to-top');
+      var formSuccess = document.querySelector('.form-success');
+      if (formSuccess) {
+        formSuccess.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      function onScroll() {
+        var s = window.scrollY > 8;
+        if (header) header.classList.toggle('is-scrolled', s);
+        if (topBtn) topBtn.classList.toggle('is-visible', window.scrollY > 320);
+      }
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      if (topBtn) topBtn.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initEffects); else initEffects();
+  })();
+</script>
+{% endblock %}
